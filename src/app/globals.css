@@ -5,11 +5,45 @@
     -webkit-font-smoothing: antialiased;
 }
 
+:root[data-theme='light'] {
+    --bg-primary: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-navbar: #ffffff;
+    --text-primary: #1a1d20;
+    --text-secondary: #6c757d;
+    --accent: #ff4a7a;
+    --accent-glow: rgba(255, 74, 122, 0.2);
+}
+
+:root[data-theme='dark'] {
+    --bg-primary: #0b0d17;
+    --bg-card: #16192b;
+    --bg-navbar: #1a1a2e;
+    --text-primary: #f8f9fa;
+    --text-secondary: #a0aec0;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+}
+
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
     min-height: 100vh;
+}
+
+#navbarNav {
+    transition: background-color 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+    #navbarNav {
+        background-color: var(--mobile-collapse-bg);
+    }
+
+    #navbarNav .nav-link {
+        color: var(--mobile-collapse-text) !important;
+    }
 }
 
 .btn:focus,
@@ -22,24 +56,6 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-}
-
-:root[data-theme='light'] {
-    --bg-primary: #f8f9fa;
-    --bg-card: #ffffff;
-    --text-primary: #1a1d20;
-    --text-secondary: #6c757d;
-    --accent: #ff4a7a;
-    --accent-glow: rgba(255, 74, 122, 0.2);
-}
-
-:root[data-theme='dark'] {
-    --bg-primary: #0b0d17;
-    --bg-card: #16192b;
-    --text-primary: #f8f9fa;
-    --text-secondary: #a0aec0;
-    --accent: #3b82f6;
-    --accent-glow: rgba(59, 130, 246, 0.3);
 }
 
 .glass-card {
