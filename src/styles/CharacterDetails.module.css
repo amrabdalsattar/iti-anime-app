@@ -1,0 +1,139 @@
+.pageWrapper {
+    background: var(--bg-primary);
+    min-height: 100vh;
+    color: var(--text-primary);
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.backLink:hover {
+    color: var(--accent);
+}
+
+/* --- POSTER (LEFT COLUMN) --- */
+.posterWrapper {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    isolation: isolate;
+}
+
+.posterImg {
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.posterWrapper:hover .posterImg {
+    transform: scale(1.05);
+}
+
+/* Neon glow sitting behind the image corner */
+.glowEffect {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+}
+
+/* --- CONTENT (RIGHT COLUMN) --- */
+.contentBlock {
+    padding-left: 1rem;
+}
+
+.originTag {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.charName {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin: 0.5rem 0 1.5rem;
+    background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glassDivider {
+    height: 1px;
+    background: linear-gradient(to right, var(--accent), rgba(255, 255, 255, 0.05));
+    margin-bottom: 2rem;
+    border-radius: 1px;
+}
+
+.sectionTitle {
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* --- STATS GRID --- */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.statCard {
+    background: var(--bg-card);
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.statCard span {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.statCard strong {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+@media (max-width: 992px) {
+    .posterWrapper {
+        height: 450px;
+    }
+
+    .contentBlock {
+        padding-left: 0;
+        margin-top: 2rem;
+    }
+
+    .charName {
+        font-size: 2.5rem;
+    }
+}

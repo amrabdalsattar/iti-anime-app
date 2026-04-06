@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+}
+
+.btn:focus,
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem var(--accent-glow) !important;
+    border-color: var(--accent) !important;
+}
+
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+:root[data-theme='light'] {
+    --bg-primary: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #1a1d20;
+    --text-secondary: #6c757d;
+    --accent: #ff4a7a;
+    --accent-glow: rgba(255, 74, 122, 0.2);
+}
+
+:root[data-theme='dark'] {
+    --bg-primary: #0b0d17;
+    --bg-card: #16192b;
+    --text-primary: #f8f9fa;
+    --text-secondary: #a0aec0;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--accent-glow);
+}

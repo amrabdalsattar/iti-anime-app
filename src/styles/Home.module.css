@@ -1,0 +1,158 @@
+.homeWrapper {
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    color: var(--text-primary);
+}
+
+/* --- HERO SECTION --- */
+.heroSection {
+    position: relative;
+    padding: 120px 0 80px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+}
+
+.heroGlow {
+    position: absolute;
+    top: -150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, rgba(0, 0, 0, 0) 70%);
+    filter: blur(50px);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.heroSub {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.heroTitle {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.heroLead {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+}
+
+.heroBtn {
+    display: inline-block;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.heroBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px var(--accent-glow);
+    background: var(--accent);
+    color: #ffffff;
+}
+
+/* --- SECTION HEADERS --- */
+.sectionTitle {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    position: relative;
+}
+
+.viewAll {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
+
+.viewAll:hover {
+    opacity: 0.8;
+}
+
+/* --- CHARACTER CARDS --- */
+.characterLink {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.characterCard {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.characterCard:hover {
+    transform: translateX(8px);
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.avatarWrapper {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--accent);
+}
+
+.avatarImg {
+    object-fit: cover;
+}
+
+.charDetails {
+    overflow: hidden;
+}
+
+.charName {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.1rem;
+}
+
+.charDesc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.animeOrigin {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-glow);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+}
