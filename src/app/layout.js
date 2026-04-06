@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import BootstrapLoader from '@/components/BootstrapLoader'
 
 export const metadata = {
-    title: 'Otacku',
+    title: 'Otaku',
     description: 'Minimal Anime App',
 }
 

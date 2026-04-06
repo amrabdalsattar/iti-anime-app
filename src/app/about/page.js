@@ -10,12 +10,12 @@ export default function About() {
                 <div className={styles.contentBlock}>
                     {/* Header Zone */}
                     <span className={styles.subTitle}>Project Info</span>
-                    <h1 className={styles.mainHeading}>About Otacku</h1>
+                    <h1 className={styles.mainHeading}>About Otaku</h1>
                     <div className={styles.glassDivider}></div>
 
                     {/* Main Description */}
                     <p className={styles.description}>
-                        Otacku is a highly curated, premium visual experience built for anime fans.
+                        Otaku is a highly curated, premium visual experience built for anime fans.
                         It showcases high-fidelity artwork and profiles in a cinematic interface, prioritizing
                         immersion, minimalism, and buttery-smooth interactions.
                     </p>

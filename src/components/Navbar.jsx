@@ -29,7 +29,7 @@ const Navbar = () => {
         <nav className={`navbar navbar-expand-lg ${styles.customNavbar}`}>
             <div className="container">
                 <Link className={styles.brand} href="/">
-                    Anime<span>App</span>
+                    Ota<span>ku</span>
                 </Link>
 
                 <button

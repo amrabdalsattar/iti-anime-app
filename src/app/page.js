@@ -14,9 +14,9 @@ export default function Home() {
                 <div className={styles.heroGlow}></div>
                 <div className="container text-center position-relative">
                     <span className={styles.heroSub}>Your Ultimate Anime Destination</span>
-                    <h1 className={styles.heroTitle}>Welcome to Otacku</h1>
+                    <h1 className={styles.heroTitle}>Welcome to Otaku</h1>
                     <p className={styles.heroLead}>Discover your favorite anime series, hidden gems, and iconic characters.</p>
-                    
+
                     <Link href="/anime" className={styles.heroBtn}>
                         Explore Library
                     </Link>
@@ -30,7 +30,7 @@ export default function Home() {
                         <h2 className={styles.sectionTitle}>Popular Anime</h2>
                         <Link href="/anime" className={styles.viewAll}>View All</Link>
                     </div>
-                    
+
                     <div className="row g-4">
                         {animeList.slice(0, 3).map(anime => (
                             <AnimeCard key={anime.id} anime={anime} />
@@ -49,18 +49,18 @@ export default function Home() {
                         {animeList.slice(0, 3).map(anime => {
                             const character = anime.characters[0];
                             if (!character) return null;
-                            
+
                             return (
                                 <div key={anime.id} className="col-12 col-md-4">
-                                    <Link 
+                                    <Link
                                         href={`/anime/${anime.id}/characters/${character.id}`}
                                         className={styles.characterLink}
                                     >
                                         <div className={styles.characterCard}>
                                             <div className={styles.avatarWrapper}>
-                                                <Image 
-                                                    src={character.image} 
-                                                    alt={character.name} 
+                                                <Image
+                                                    src={character.image}
+                                                    alt={character.name}
                                                     fill
                                                     className={styles.avatarImg}
                                                 />
