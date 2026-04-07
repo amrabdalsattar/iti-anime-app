@@ -1,4 +1,3 @@
-import { animeList } from '@/data/anime_data_source'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../../../../../styles/CharacterDetails.module.css'
@@ -6,28 +5,38 @@ import styles from '../../../../../styles/CharacterDetails.module.css'
 export default async function Character({ params }) {
     const { id, charId } = await params
 
-    const anime = animeList.find(
-        (a) => a.id.toString() === id
-    )
+    let anime = null
+    let character = null
+    let error = null
 
-    if (!anime) {
-        return (
-            <div className="container py-5 text-center">
-                <h2 className="display-6 font-weight-bold">Anime Not Found</h2>
-                <Link href="/anime" className="btn btn-outline-secondary mt-3">Back to Library</Link>
-            </div>
-        )
+    try {
+        // Fetch anime details for title
+        const animeResponse = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
+        if (!animeResponse.ok) {
+            throw new Error('Failed to fetch anime details')
+        }
+        const animeData = await animeResponse.json()
+        anime = animeData.data
+
+        // Fetch character details
+        const characterResponse = await fetch(`https://api.jikan.moe/v4/characters/${charId}`)
+        if (!characterResponse.ok) {
+            throw new Error('Failed to fetch character details')
+        }
+        const characterData = await characterResponse.json()
+        character = characterData.data
+    } catch (err) {
+        error = err.message
     }
 
-    const character = anime.characters.find(
-        (c) => c.id.toString() === charId
-    )
-
-    if (!character) {
+    if (error || !anime || !character) {
         return (
             <div className="container py-5 text-center">
-                <h2 className="display-6 font-weight-bold">Character Not Found</h2>
-                <Link href={`/anime/${id}`} className="btn btn-outline-secondary mt-3">Back to Anime</Link>
+                <div className="alert alert-danger" role="alert">
+                    <h4 className="alert-heading">Character Not Found</h4>
+                    <p>{error || 'The requested character could not be found.'}</p>
+                    <Link href={`/anime/${id}`} className="btn btn-outline-secondary mt-3">Back to Anime</Link>
+                </div>
             </div>
         )
     }
@@ -46,7 +55,7 @@ export default async function Character({ params }) {
                     <div className="col-lg-5">
                         <div className={styles.posterWrapper}>
                             <Image
-                                src={character.image}
+                                src={character.images.jpg.image_url}
                                 alt={character.name}
                                 fill
                                 className={styles.posterImg}
@@ -61,23 +70,23 @@ export default async function Character({ params }) {
                         <div className={styles.contentBlock}>
                             <span className={styles.originTag}>{anime.title}</span>
                             <h1 className={styles.charName}>{character.name}</h1>
-                            
+
                             <div className={styles.glassDivider}></div>
 
                             <div className="mb-4">
                                 <h5 className={styles.sectionTitle}>Biography</h5>
-                                <p className={styles.description}>{character.description}</p>
+                                <p className={styles.description}>{character.about}</p>
                             </div>
 
                             {/* Quick Stats Grid */}
                             <div className={styles.statsGrid}>
                                 <div className={styles.statCard}>
-                                    <span>Role</span>
-                                    <strong>Protagonist / Main</strong>
+                                    <span>Favorites</span>
+                                    <strong>{character.favorites}</strong>
                                 </div>
                                 <div className={styles.statCard}>
-                                    <span>Status</span>
-                                    <strong>Active</strong>
+                                    <span>Name (Kanji)</span>
+                                    <strong>{character.name_kanji || 'N/A'}</strong>
                                 </div>
                             </div>
                         </div>
