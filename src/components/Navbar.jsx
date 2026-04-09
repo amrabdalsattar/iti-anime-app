@@ -1,7 +1,10 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useTheme } from './ThemeProvider'
+import { getUser, logout } from '@/lib/auth'
 import styles from '../styles/Navbar.module.css'
 
 const SunIcon = () => (
@@ -23,7 +26,24 @@ const MoonIcon = () => (
 )
 
 const Navbar = () => {
+    const router = useRouter()
     const { darkMode, toggleDarkMode } = useTheme()
+    const [user, setUser] = useState(null)
+
+    const checkAuth = () => {
+        setUser(getUser())
+    }
+
+    useEffect(() => {
+        checkAuth()
+        window.addEventListener('auth_changed', checkAuth)
+        return () => window.removeEventListener('auth_changed', checkAuth)
+    }, [])
+
+    const handleLogout = () => {
+        logout()
+        router.push('/login')
+    }
 
     return (
         <nav className={`navbar navbar-expand-lg ${styles.customNavbar}`}>
@@ -49,9 +69,28 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link className={styles.navLink} href="/anime">Anime</Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className={styles.navLink} href="/about">About</Link>
-                        </li>
+
+                        {user ? (
+                            <>
+                                <li className="nav-item ms-lg-3">
+                                    <span className="nav-link text-secondary" style={{ fontSize: '0.9rem' }}>
+                                        {user.email} {user.role === 'admin' ? `(Admin)` : ''}
+                                    </span>
+                                </li>
+                                <li className="nav-item">
+                                    <button className={`btn btn-link ${styles.navLink}`} onClick={handleLogout}>Logout</button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li className="nav-item ms-lg-2">
+                                    <Link className={styles.navLink} href="/login">Login</Link>
+                                </li>
+                                <li className="nav-item ms-lg-2">
+                                    <Link className={`btn text-white px-3 py-2 ms-lg-2 rounded-3`} style={{ background: 'var(--accent)', fontWeight: '600' }} href="/register">Register</Link>
+                                </li>
+                            </>
+                        )}
 
                         <li className="nav-item ms-lg-3 mt-2 mt-lg-0">
                             <button

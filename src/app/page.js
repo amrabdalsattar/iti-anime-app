@@ -4,6 +4,7 @@ import AnimeCard from '@/components/AnimeCard'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { getAnimeList, getTopCharacters } from '@/lib/api'
 import styles from '../styles/Home.module.css'
 
 function FeaturedCharacters({ animeId }) {
@@ -14,11 +15,7 @@ function FeaturedCharacters({ animeId }) {
     useEffect(() => {
         const fetchCharacters = async () => {
             try {
-                const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}/characters`)
-                if (!response.ok) {
-                    throw new Error('Failed to fetch characters')
-                }
-                const data = await response.json()
+                const data = await getTopCharacters()
                 setCharacters(data.data.slice(0, 3))
             } catch (err) {
                 setError(err.message)
@@ -41,23 +38,23 @@ function FeaturedCharacters({ animeId }) {
     }
 
     return characters.map((char) => (
-        <div key={char.character.mal_id} className="col-12 col-md-4">
+        <div key={char._id || char.characterId} className="col-12 col-md-4">
             <Link
-                href={`/anime/${animeId}/characters/${char.character.mal_id}`}
+                href={`/characters/${char._id || char.characterId}`}
                 className={styles.characterLink}
             >
                 <div className={styles.characterCard}>
                     <div className={styles.avatarWrapper}>
                         <Image
-                            src={char.character.images.jpg.image_url}
-                            alt={char.character.name}
+                            src={char.image || 'https://via.placeholder.com/150'}
+                            alt={char.name}
                             fill
                             className={styles.avatarImg}
                         />
                     </div>
                     <div className={styles.charDetails}>
-                        <h5 className={styles.charName}>{char.character.name}</h5>
-                        <p className={styles.charDesc}>{char.role}</p>
+                        <h5 className={styles.charName}>{char.name}</h5>
+                        <p className={styles.charDesc}>{char.kanjiName || 'Main Character'}</p>
                         <span className={styles.animeOrigin}>From Top Anime</span>
                     </div>
                 </div>
@@ -74,11 +71,7 @@ export default function Home() {
     useEffect(() => {
         const fetchTopAnime = async () => {
             try {
-                const response = await fetch('https://api.jikan.moe/v4/top/anime')
-                if (!response.ok) {
-                    throw new Error(response.message)
-                }
-                const data = await response.json()
+                const data = await getAnimeList({ sort: '-rate', limit: 3 })
                 setAnimeList(data.data)
             } catch (err) {
                 setError(err.message)
@@ -145,7 +138,7 @@ export default function Home() {
 
                     <div className="row g-4">
                         {animeList.slice(0, 3).map(anime => (
-                            <AnimeCard key={anime.mal_id} anime={anime} />
+                            <AnimeCard key={anime._id} anime={anime} />
                         ))}
                     </div>
                 </section>
@@ -159,7 +152,7 @@ export default function Home() {
 
                     <div className="row g-4">
                         {animeList.length > 0 && (
-                            <FeaturedCharacters animeId={animeList[0].mal_id} />
+                            <FeaturedCharacters animeId={animeList[0]._id} />
                         )}
                     </div>
                 </section>

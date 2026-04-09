@@ -4,11 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'myanimelist.net',
+        hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: 'cdn.myanimelist.net',
+        protocol: 'http',
+        hostname: '**',
       },
     ],
   },

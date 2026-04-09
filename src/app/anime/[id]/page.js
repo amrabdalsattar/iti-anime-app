@@ -1,31 +1,66 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter, useParams } from 'next/navigation'
+import { getAnimeById, getAnimeCharacters, deleteAnime } from '@/lib/api'
+import { isAdmin } from '@/lib/auth'
 import styles from '../../../styles/AnimeDetails.module.css'
 
-export default async function AnimeDetails({ params }) {
-    const { id } = await params
+export default function AnimeDetails() {
+    const params = useParams();
+    const router = useRouter();
+    const id = params.id;
 
-    let anime = null
-    let characters = []
-    let error = null
+    const [anime, setAnime] = useState(null)
+    const [characters, setCharacters] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [isUserAdmin, setIsUserAdmin] = useState(false)
 
-    try {
-        // Fetch anime details
-        const animeResponse = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
-        if (!animeResponse.ok) {
-            throw new Error('Failed to fetch anime details')
+    useEffect(() => {
+        setIsUserAdmin(isAdmin())
+        const fetchData = async () => {
+            try {
+                // Fetch anime details
+                const animeData = await getAnimeById(id)
+                setAnime(animeData.data)
+
+                // Fetch characters
+                const charactersData = await getAnimeCharacters(id)
+                setCharacters(charactersData.data)
+            } catch (err) {
+                setError(err.message)
+            } finally {
+                setLoading(false)
+            }
         }
-        const animeData = await animeResponse.json()
-        anime = animeData.data
-
-        // Fetch characters
-        const charactersResponse = await fetch(`https://api.jikan.moe/v4/anime/${id}/characters`)
-        if (charactersResponse.ok) {
-            const charactersData = await charactersResponse.json()
-            characters = charactersData.data
+        
+        if (id) {
+            fetchData()
         }
-    } catch (err) {
-        error = err.message
+    }, [id])
+
+    const handleDelete = async () => {
+        if (confirm(`Are you sure you want to delete ${anime.name}?`)) {
+            try {
+                await deleteAnime(id)
+                router.push('/anime')
+            } catch (err) {
+                alert(err.message)
+            }
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="container py-5 text-center">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        )
     }
 
     if (error || !anime) {
@@ -45,23 +80,30 @@ export default async function AnimeDetails({ params }) {
             {/* 1. Immersive Hero Banner */}
             <div className={styles.heroBanner}>
                 <Image
-                    src={anime.images.jpg.large_image_url}
-                    alt={anime.title}
+                    src={anime.image || 'https://via.placeholder.com/1200x400'}
+                    alt={anime.name}
                     fill
                     className={styles.bannerImg}
                     priority
                 />
                 <div className={styles.bannerOverlay}></div>
 
+                {isUserAdmin && (
+                    <div className="position-absolute" style={{ top: '20px', right: '20px', zIndex: 10 }}>
+                        <button className="btn btn-light rounded-circle p-2 mx-1 shadow" onClick={() => alert('Edit form here')} title="Edit Anime">✏️</button>
+                        <button className="btn btn-light rounded-circle p-2 mx-1 shadow text-danger" onClick={handleDelete} title="Delete Anime">🗑️</button>
+                    </div>
+                )}
+
                 <div className={styles.heroContent}>
                     <div className="container">
-                        <span className={styles.yearTag}>{anime.aired.prop.from.year}</span>
-                        <h1 className={styles.mainTitle}>{anime.title}</h1>
+                        <span className={styles.yearTag}>{anime.year || 'N/A'}</span>
+                        <h1 className={styles.mainTitle}>{anime.name}</h1>
                         <div className={styles.metaRow}>
-                            <span className={styles.badge}>{anime.genres.map(g => g.name).join(', ')}</span>
+                            <span className={styles.badge}>{(anime.classifications || []).join(', ')}</span>
                             <span className={styles.rating}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                {anime.score} / 10
+                                {anime.rate || 0} / 10
                             </span>
                         </div>
                     </div>
@@ -80,23 +122,30 @@ export default async function AnimeDetails({ params }) {
 
                         {/* Characters Grid */}
                         <section>
-                            <h4 className={styles.sectionHeading}>Characters</h4>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h4 className={styles.sectionHeading} style={{ marginBottom: 0 }}>Characters</h4>
+                                {isUserAdmin && (
+                                    <button className="btn text-white px-3 py-1 rounded-3" style={{ background: 'var(--accent)', fontSize: '0.9rem' }} onClick={() => alert('Add Character Form here')}>
+                                        + Add Character
+                                    </button>
+                                )}
+                            </div>
                             <div className="row g-3">
                                 {characters.slice(0, 12).map((char) => (
-                                    <div key={char.character.mal_id} className="col-6 col-sm-4 col-md-3">
+                                    <div key={char.characterId} className="col-6 col-sm-4 col-md-3">
                                         <Link
-                                            href={`/anime/${anime.mal_id}/characters/${char.character.mal_id}`}
+                                            href={`/characters/${char.characterId}`}
                                             className={styles.charLink}
                                         >
                                             <div className={styles.charAvatarWrapper}>
                                                 <Image
-                                                    src={char.character.images.jpg.image_url}
-                                                    alt={char.character.name}
+                                                    src={char.image || 'https://via.placeholder.com/150'}
+                                                    alt={char.name}
                                                     fill
                                                     className={styles.charAvatar}
                                                 />
                                             </div>
-                                            <span className={styles.charName}>{char.character.name}</span>
+                                            <span className={styles.charName}>{char.name}</span>
                                         </Link>
                                     </div>
                                 ))}
@@ -110,15 +159,15 @@ export default async function AnimeDetails({ params }) {
                             <h5 className="mb-3 font-weight-bold">Information</h5>
                             <div className={styles.infoRow}>
                                 <span>Type</span>
-                                <strong>{anime.type}</strong>
+                                <strong>{anime.type || 'series'}</strong>
                             </div>
                             <div className={styles.infoRow}>
                                 <span>Premiered</span>
-                                <strong>{anime.aired.prop.from.year}</strong>
+                                <strong>{anime.year || 'N/A'}</strong>
                             </div>
                             <div className={styles.infoRow}>
                                 <span>Studio</span>
-                                <strong>{anime.studios.map(s => s.name).join(', ')}</strong>
+                                <strong>{anime.studio || 'N/A'}</strong>
                             </div>
                             <div className={styles.infoRow}>
                                 <span>Episodes</span>
@@ -126,11 +175,11 @@ export default async function AnimeDetails({ params }) {
                             </div>
                             <div className={styles.infoRow}>
                                 <span>Status</span>
-                                <strong>{anime.status}</strong>
+                                <strong>{anime.status || 'ongoing'}</strong>
                             </div>
                             <div className={styles.infoRow}>
                                 <span>Rating</span>
-                                <strong>{anime.rating}</strong>
+                                <strong>{anime.rating || 'N/A'}</strong>
                             </div>
                         </div>
                     </div>

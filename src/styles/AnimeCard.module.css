@@ -98,3 +98,41 @@
     transform: translateX(0);
     background: var(--accent);
 }
+
+.adminControls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.animeCard:hover .adminControls {
+    opacity: 1;
+}
+
+.adminBtn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 14px;
+}
+
+.adminBtn:hover {
+    transform: scale(1.15);
+}
+
+.deleteBtn {
+    /* Optional special styling for delete */
+}

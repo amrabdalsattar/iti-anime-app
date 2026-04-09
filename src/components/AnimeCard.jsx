@@ -2,19 +2,53 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { isAdmin } from '@/lib/auth'
+import { deleteAnime } from '@/lib/api'
 import styles from '../styles/AnimeCard.module.css'
 
-const AnimeCard = ({ anime }) => {
-    // Handle both static data and API data
-    const id = anime.mal_id || anime.id
-    const image = anime.images?.jpg?.large_image_url
-    const title = anime.title
-    const year = anime.aired?.prop?.from?.year || anime.year
+const AnimeCard = ({ anime, onDelete }) => {
+    const router = useRouter()
+    const id = anime._id || anime.id
+    const image = anime.image || 'https://via.placeholder.com/300x400'
+    const title = anime.name || anime.title
+    const year = anime.year || 'N/A'
+
+    // Only show admin controls if user is admin
+    const isUserAdmin = typeof window !== 'undefined' ? isAdmin() : false;
+
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (confirm(`Are you sure you want to delete ${title}?`)) {
+            try {
+                await deleteAnime(id);
+                if (onDelete) onDelete(id);
+                else window.location.reload();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+    }
+
+    const handleEdit = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        router.push(`/anime/${id}?edit=true`);
+    }
 
     return (
         <div className="col-12 col-sm-6 col-lg-4 mb-4">
             <Link href={`/anime/${id}`} className={styles.cardLink}>
                 <div className={styles.animeCard}>
+                    {/* Admin Controls Overlay */}
+                    {isUserAdmin && (
+                        <div className={styles.adminControls}>
+                            <button onClick={handleEdit} className={styles.adminBtn} title="Edit">✏️</button>
+                            <button onClick={handleDelete} className={`${styles.adminBtn} ${styles.deleteBtn}`} title="Delete">🗑️</button>
+                        </div>
+                    )}
+
                     {/* Image Container with precise aspect ratio */}
                     <div className={styles.imageWrapper}>
                         <Image
