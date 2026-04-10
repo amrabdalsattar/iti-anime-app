@@ -1,7 +1,117 @@
-.pageWrapper {
+.detailsWrapper {
     background: var(--bg-primary);
     min-height: 100vh;
     color: var(--text-primary);
+    padding-top: 2rem;
+}
+
+/* --- POSTER (LEFT COLUMN) --- */
+.posterContainer {
+    position: sticky;
+    top: 2rem;
+    /* Keeps the image visible while scrolling long bios */
+}
+
+.posterWrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    /* Prevents layout shift */
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    isolation: isolate;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.posterImg {
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.posterWrapper:hover .posterImg {
+    transform: scale(1.08);
+}
+
+/* --- CONTENT (RIGHT COLUMN) --- */
+.charName {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    /* Fluid typography */
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin: 0.5rem 0;
+    background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent) 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+}
+
+.kanjiName {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+.glassDivider {
+    height: 1px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    margin: 2rem 0;
+}
+
+/* --- STATS GRID --- */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.statCard {
+    background: var(--bg-card);
+    padding: 1.25rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: border-color 0.3s ease;
+}
+
+.statCard:hover {
+    border-color: var(--accent);
+}
+
+.statLabel {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+
+.statValue {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.biography {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    white-space: pre-line;
+    /* Preserves API line breaks */
+}
+
+@media (max-width: 992px) {
+    .posterContainer {
+        position: relative;
+        top: 0;
+    }
+
+    .charName {
+        font-size: 2.8rem;
+    }
 }
 
 .backLink {
@@ -11,129 +121,98 @@
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.95rem;
-    transition: color 0.2s ease;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
 }
 
 .backLink:hover {
     color: var(--accent);
+    transform: translateX(-4px);
 }
 
-/* --- POSTER (LEFT COLUMN) --- */
-.posterWrapper {
-    position: relative;
-    width: 100%;
-    height: 600px;
-    border-radius: 24px;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    isolation: isolate;
+/* Styling for the clickable Anime Origin */
+.originLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    /* Uses your primary brand color */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 700;
 }
 
-.posterImg {
-    object-fit: cover;
-    transition: transform 0.5s ease;
+.originLink:hover {
+    color: var(--text-primary);
+    transform: translateX(4px);
 }
 
-.posterWrapper:hover .posterImg {
-    transform: scale(1.05);
+.arrowIcon {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
 }
 
-/* Neon glow sitting behind the image corner */
-.glowEffect {
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
-    pointer-events: none;
+.originLink:hover .arrowIcon {
+    transform: scale(1.2);
 }
 
-/* --- CONTENT (RIGHT COLUMN) --- */
-.contentBlock {
-    padding-left: 1rem;
+/* Ensure the statCard containing a link feels interactive */
+.statCard:has(.originLink) {
+    cursor: pointer;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.statCard:has(.originLink):hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent);
 }
 
 .originTag {
-    color: var(--accent);
-    font-weight: 700;
-    font-size: 0.9rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
+    display: inline-flex;
+    align-items: center;
 
-.charName {
-    font-size: 3.5rem;
-    font-weight: 900;
-    letter-spacing: -1.5px;
-    margin: 0.5rem 0 1.5rem;
-    background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.glassDivider {
-    height: 1px;
-    background: linear-gradient(to right, var(--accent), rgba(255, 255, 255, 0.05));
-    margin-bottom: 2rem;
-    border-radius: 1px;
-}
-
-.sectionTitle {
+    /* Typography */
+    font-size: 0.7rem;
     font-weight: 800;
-    font-size: 1.2rem;
-    margin-bottom: 0.75rem;
-    color: var(--text-primary);
-}
-
-.description {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    line-height: 1.8;
-}
-
-/* --- STATS GRID --- */
-.statsGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.statCard {
-    background: var(--bg-card);
-    padding: 1.25rem;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.statCard span {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 2px;
+
+    /* Colors & Glassmorphism */
+    color: var(--accent);
+    background: var(--accent-glow);
+    /* Subtle tint of your brand color */
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    border: 1px solid rgba(20, 164, 136, 0.2);
+    /* Soft brand border */
+
+    /* Spacing */
+    margin-bottom: 1.25rem;
+    width: fit-content;
+
+    /* Animation for that premium feel */
+    animation: tagFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.statCard strong {
-    color: var(--text-primary);
-    font-size: 1rem;
-    font-weight: 700;
+/* Theme specific refinements */
+[data-theme='light'] .originTag {
+    background: rgba(20, 164, 136, 0.08);
+    border-color: rgba(20, 164, 136, 0.15);
 }
 
-@media (max-width: 992px) {
-    .posterWrapper {
-        height: 450px;
+[data-theme='dark'] .originTag {
+    background: rgba(20, 164, 136, 0.12);
+    box-shadow: 0 0 20px rgba(20, 164, 136, 0.05);
+}
+
+@keyframes tagFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
 
-    .contentBlock {
-        padding-left: 0;
-        margin-top: 2rem;
-    }
-
-    .charName {
-        font-size: 2.5rem;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

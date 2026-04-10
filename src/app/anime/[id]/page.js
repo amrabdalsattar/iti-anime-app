@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { getAnimeById, getAnimeCharacters, deleteAnime } from '@/lib/api'
 import { isAdmin } from '@/lib/auth'
+import AnimeModal from '@/components/AnimeModal'
+import CharacterModal from '@/components/CharacterModal'
 import styles from '../../../styles/AnimeDetails.module.css'
 
 export default function AnimeDetails() {
@@ -18,29 +20,31 @@ export default function AnimeDetails() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [isUserAdmin, setIsUserAdmin] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
+    const [showCharModal, setShowCharModal] = useState(false)
+
+    const fetchData = useCallback(async () => {
+        try {
+            // Fetch anime details
+            const animeData = await getAnimeById(id)
+            setAnime(animeData.data)
+
+            // Fetch characters
+            const charactersData = await getAnimeCharacters(id)
+            setCharacters(charactersData.data)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }, [id])
 
     useEffect(() => {
         setIsUserAdmin(isAdmin())
-        const fetchData = async () => {
-            try {
-                // Fetch anime details
-                const animeData = await getAnimeById(id)
-                setAnime(animeData.data)
-
-                // Fetch characters
-                const charactersData = await getAnimeCharacters(id)
-                setCharacters(charactersData.data)
-            } catch (err) {
-                setError(err.message)
-            } finally {
-                setLoading(false)
-            }
-        }
-        
         if (id) {
             fetchData()
         }
-    }, [id])
+    }, [id, fetchData])
 
     const handleDelete = async () => {
         if (confirm(`Are you sure you want to delete ${anime.name}?`)) {
@@ -90,7 +94,7 @@ export default function AnimeDetails() {
 
                 {isUserAdmin && (
                     <div className="position-absolute" style={{ top: '20px', right: '20px', zIndex: 10 }}>
-                        <button className="btn btn-light rounded-circle p-2 mx-1 shadow" onClick={() => alert('Edit form here')} title="Edit Anime">✏️</button>
+                        <button className="btn btn-light rounded-circle p-2 mx-1 shadow" onClick={() => setShowEditModal(true)} title="Edit Anime">✏️</button>
                         <button className="btn btn-light rounded-circle p-2 mx-1 shadow text-danger" onClick={handleDelete} title="Delete Anime">🗑️</button>
                     </div>
                 )}
@@ -125,7 +129,7 @@ export default function AnimeDetails() {
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h4 className={styles.sectionHeading} style={{ marginBottom: 0 }}>Characters</h4>
                                 {isUserAdmin && (
-                                    <button className="btn text-white px-3 py-1 rounded-3" style={{ background: 'var(--accent)', fontSize: '0.9rem' }} onClick={() => alert('Add Character Form here')}>
+                                    <button className="btn text-white px-3 py-1 rounded-3" style={{ background: 'var(--accent)', fontSize: '0.9rem' }} onClick={() => setShowCharModal(true)}>
                                         + Add Character
                                     </button>
                                 )}
@@ -185,6 +189,23 @@ export default function AnimeDetails() {
                     </div>
                 </div>
             </div>
+
+            {isUserAdmin && (
+                <>
+                    <AnimeModal 
+                        show={showEditModal} 
+                        onClose={() => setShowEditModal(false)}
+                        onSuccess={fetchData}
+                        initialData={anime}
+                    />
+                    <CharacterModal
+                        show={showCharModal}
+                        onClose={() => setShowCharModal(false)}
+                        onSuccess={fetchData}
+                        animeId={id}
+                    />
+                </>
+            )}
         </div>
     )
 }

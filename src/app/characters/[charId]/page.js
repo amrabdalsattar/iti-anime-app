@@ -8,103 +8,139 @@ import { getCharacterById } from '@/lib/api'
 import styles from '../../../styles/CharacterDetails.module.css'
 
 export default function CharacterDetails() {
-    const params = useParams()
-    const id = params.charId
+    const { charId } = useParams()
 
     const [character, setCharacter] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
     useEffect(() => {
+        if (!charId) return
+
         const fetchCharacter = async () => {
             try {
-                const data = await getCharacterById(id)
-                setCharacter(data.data)
+                const response = await getCharacterById(charId)
+                // Accessing data based on your API structure (data.data)
+                setCharacter(response?.data || null)
             } catch (err) {
                 setError(err.message)
             } finally {
                 setLoading(false)
             }
         }
-        
-        if (id) {
-            fetchCharacter()
-        }
-    }, [id])
 
-    if (loading) {
-        return (
-            <div className="container py-5 text-center">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        )
-    }
+        fetchCharacter()
+    }, [charId])
+
+    if (loading) return <LoadingSpinner />
 
     if (error || !character) {
-        return (
-            <div className="container py-5 text-center">
-                <div className="alert alert-danger" role="alert">
-                    <h4 className="alert-heading">Character Not Found</h4>
-                    <p>{error || 'The requested character could not be found.'}</p>
-                    <Link href="/anime" className="btn btn-outline-secondary mt-3">Back to Library</Link>
-                </div>
-            </div>
-        )
+        return <ErrorState message={error} />
     }
 
     return (
-        <div className={styles.detailsWrapper}>
+        <main className={styles.detailsWrapper}>
             <div className="container py-5">
+                {/* Back Link with subtle hover interaction */}
+                <Link href="/anime" className={styles.backLink}>
+                    <span>←</span> Back to Library
+                </Link>
+
                 <div className="row g-5">
-                    {/* Left Column: Image */}
+                    {/* Left Column: Poster Image */}
                     <div className="col-lg-4">
-                        <div className={styles.imageCard}>
-                            <Image
-                                src={character.image || 'https://via.placeholder.com/400x600'}
-                                alt={character.name || character.charName || 'Character'}
-                                fill
-                                className={styles.mainImg}
-                                priority
-                            />
+                        <div className={styles.posterContainer}>
+                            <div className={styles.posterWrapper}>
+                                <Image
+                                    src={character.image || '/placeholder-character.png'}
+                                    alt={character.name || "Character Poster"}
+                                    fill
+                                    className={styles.posterImg}
+                                    priority
+                                    sizes="(max-width: 992px) 100vw, 33vw"
+                                />
+                                <div className={styles.glowEffect} />
+                            </div>
                         </div>
                     </div>
 
-                    {/* Right Column: Details */}
+                    {/* Right Column: Character Details */}
                     <div className="col-lg-8">
-                        <h1 className={styles.characterName}>{character.name || character.charName}</h1>
-                        <h3 className={styles.kanjiName}>{character.kanjiName}</h3>
-                        
-                        <div className={styles.statsRow}>
-                            <div className={styles.statBox}>
+                        <header className={styles.contentBlock}>
+                            {/* This is the badge we are styling */}
+                            <span className={styles.originTag}>Character Profile</span>
+
+                            <h1 className={styles.charName}>
+                                {character.name || character.charName}
+                            </h1>
+                            {character.kanjiName && (
+                                <p className={styles.kanjiName}>{character.kanjiName}</p>
+                            )}
+                        </header>
+
+                        <div className={styles.statsGrid}>
+                            <div className={styles.statCard}>
                                 <span className={styles.statLabel}>Favorites</span>
-                                <span className={styles.statValue}>
-                                    ❤️ {character.favouritesNumber || 0}
-                                </span>
+                                <strong className={styles.statValue}>
+                                    {character.favouritesNumber?.toLocaleString() || 0}
+                                </strong>
                             </div>
                             {character.animeName && (
-                                <div className={styles.statBox}>
-                                    <span className={styles.statLabel}>Anime</span>
-                                    <span className={styles.statValue}>
-                                        {character.animeName}
-                                    </span>
+                                <div className={styles.statCard}>
+                                    <span className={styles.statLabel}>Anime Origin</span>
+                                    <div className={styles.statValue}>
+                                        {character.animeId ? (
+                                            <Link
+                                                href={`/anime/${character.animeId}`}
+                                                className={styles.originLink}
+                                            >
+                                                {character.animeName}
+                                                <span className={styles.arrowIcon}>→</span>
+                                            </Link>
+                                        ) : (
+                                            character.animeName
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </div>
 
-                        <section className="mt-5">
-                            <h4 className={styles.sectionHeading}>Biography</h4>
+                        <div className={styles.glassDivider} />
+
+                        <section className={styles.contentBlock}>
+                            <h2 className={styles.sectionTitle}>Biography</h2>
                             <div className={styles.biography}>
-                                {character.biography ? (
-                                    <p>{character.biography}</p>
-                                ) : (
-                                    <p className="text-secondary">No biography available for this character.</p>
+                                {character.biography || (
+                                    <span className="text-secondary opacity-50">No biography available.</span>
                                 )}
                             </div>
                         </section>
                     </div>
                 </div>
+            </div>
+        </main>
+    )
+}
+
+function LoadingSpinner() {
+    return (
+        <div className="container py-5 text-center">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    )
+}
+
+function ErrorState({ message }) {
+    return (
+        <div className="container py-5 text-center">
+            <div className="alert border-0 bg-danger-subtle text-danger p-5 rounded-4">
+                <h4 className="fw-bold">Character Not Found</h4>
+                <p>{message || 'The requested character could not be found.'}</p>
+                <Link href="/anime" className="btn btn-outline-danger px-4 mt-3">
+                    Back to Library
+                </Link>
             </div>
         </div>
     )

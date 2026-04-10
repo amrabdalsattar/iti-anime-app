@@ -1,0 +1,80 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+
+.modalContent {
+    background: var(--bg-card, #1A1D29);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    animation: modalFadeIn 0.3s ease-out;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modalHeader {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: #a0a0a0;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover {
+    color: #fff;
+}
+
+.formBody {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.modalFooter {
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}

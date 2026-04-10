@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import AnimeCard from '@/components/AnimeCard'
+import AnimeModal from '@/components/AnimeModal'
 import { getAnimeList, searchAnime, filterAnime } from '@/lib/api'
 import { isAdmin } from '@/lib/auth'
 import styles from '../../styles/Anime.module.css'
@@ -13,6 +14,7 @@ export default function Anime() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeFilter, setActiveFilter] = useState('all')
   const [isUserAdmin, setIsUserAdmin] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
 
   useEffect(() => {
     setIsUserAdmin(isAdmin())
@@ -92,7 +94,7 @@ export default function Anime() {
           </p>
         </div>
         {isUserAdmin && (
-          <button className="btn text-white px-4 py-2 rounded-3" style={{ background: 'var(--accent)', fontWeight: '600' }} onClick={() => alert('Add Anime Form: To be implemented in modal')}>
+          <button className="btn text-white px-4 py-2 rounded-3" style={{ background: 'var(--accent)', fontWeight: '600' }} onClick={() => setShowAddModal(true)}>
             + Add Anime
           </button>
         )}
@@ -135,6 +137,14 @@ export default function Anime() {
           <AnimeCard key={anime._id} anime={anime} onDelete={(id) => setAnimeList(prev => prev.filter(a => a._id !== id))} />
         ))}
       </div>
+
+      {isUserAdmin && (
+        <AnimeModal 
+          show={showAddModal} 
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => fetchAnime(activeFilter, searchQuery)}
+        />
+      )}
     </div>
   )
 }
